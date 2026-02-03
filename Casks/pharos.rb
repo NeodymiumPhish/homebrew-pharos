@@ -11,7 +11,7 @@ cask "pharos" do
 
   postflight do
     system_command "/usr/bin/xattr",
-                   args: ["-cr", "#{appdir}/Pharos.app"],
+                   args: ["-c", "#{appdir}/Pharos.app"],
                    sudo: false
   end
 
