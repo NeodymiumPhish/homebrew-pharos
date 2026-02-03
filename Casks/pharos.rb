@@ -1,6 +1,6 @@
 cask "pharos" do
-  version "1.0.1"
-  sha256 "a261dc3c5d1c2118e9e4019129e583fe277e0731cf7d758900baac445e597489"
+  version "1.0.3"
+  sha256 "61ab6d6f0c5c1aa49162d7052b2935b54721cf246e6b744e03f725b3445e9a07"
 
   url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_aarch64.dmg"
   name "Pharos"
@@ -11,9 +11,14 @@ cask "pharos" do
 
   postflight do
     system_command "/usr/bin/xattr",
-                   args: ["-c", "#{appdir}/Pharos.app"],
+                   args: ["-c", "-r", "#{appdir}/Pharos.app"],
                    sudo: false
   end
+
+  caveats <<~EOS
+    This app is not signed. If macOS blocks it, run:
+      xattr -d com.apple.quarantine /Applications/Pharos.app
+  EOS
 
   zap trash: [
     "~/Library/Application Support/com.pharos.client",
