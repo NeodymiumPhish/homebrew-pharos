@@ -1,6 +1,6 @@
 cask "pharos" do
   version "1.0.1"
-  sha256 "32d91fd0408e330986c89df7fab18b59418cee246e4dcd0a9a7a8d22d76595d5"  # SHA256 of your DMG
+  sha256 "a261dc3c5d1c2118e9e4019129e583fe277e0731cf7d758900baac445e597489"  # SHA256 of your DMG
 
   url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_aarch64.dmg"
   name "Pharos"
