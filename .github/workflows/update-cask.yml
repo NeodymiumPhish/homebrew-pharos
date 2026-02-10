@@ -25,24 +25,38 @@ jobs:
           else
             VERSION="${{ github.event.client_payload.version }}"
           fi
-          
+
           echo "Updating to version $VERSION"
-          
-          # Download the DMG to compute SHA256
-          DMG_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos_${VERSION}_aarch64.dmg"
-          curl -L -o pharos.dmg "$DMG_URL"
-          SHA256=$(shasum -a 256 pharos.dmg | cut -d ' ' -f 1)
-          rm pharos.dmg
-          
-          echo "SHA256: $SHA256"
-          
+
+          # Download both DMGs and compute SHA256
+          ARM_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos_${VERSION}_arm64.dmg"
+          X64_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos_${VERSION}_x64.dmg"
+
+          curl -L -o pharos_arm64.dmg "$ARM_URL"
+          curl -L -o pharos_x64.dmg "$X64_URL"
+
+          SHA256_ARM=$(shasum -a 256 pharos_arm64.dmg | cut -d ' ' -f 1)
+          SHA256_X64=$(shasum -a 256 pharos_x64.dmg | cut -d ' ' -f 1)
+          rm pharos_arm64.dmg pharos_x64.dmg
+
+          echo "ARM64 SHA256: $SHA256_ARM"
+          echo "x64 SHA256: $SHA256_X64"
+
           # Update pharos.rb
           cat > Casks/pharos.rb << EOF
           cask "pharos" do
-            version "$VERSION"
-            sha256 "$SHA256"
+            arch arm: "arm64", intel: "x64"
 
-            url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_aarch64.dmg"
+            version "$VERSION"
+
+            on_arm do
+              sha256 "$SHA256_ARM"
+            end
+            on_intel do
+              sha256 "$SHA256_X64"
+            end
+
+            url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_#{arch}.dmg"
             name "Pharos"
             desc "High-performance PostgreSQL client with modern UI"
             homepage "https://github.com/NeodymiumPhish/Pharos"
@@ -69,6 +83,11 @@ jobs:
 
       - name: Commit and push
         run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${{ github.event.client_payload.version }}"
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Casks/pharos.rb
