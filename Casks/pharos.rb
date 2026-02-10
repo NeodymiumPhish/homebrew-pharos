@@ -1,8 +1,16 @@
 cask "pharos" do
-  version "1.3.31"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  arch arm: "arm64", intel: "x64"
 
-  url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_aarch64.dmg"
+  version "1.3.31"
+
+  on_arm do
+    sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  end
+  on_intel do
+    sha256 :no_check # Update with actual SHA256 after first x64 release
+  end
+
+  url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_#{arch}.dmg"
   name "Pharos"
   desc "High-performance PostgreSQL client with modern UI"
   homepage "https://github.com/NeodymiumPhish/Pharos"
