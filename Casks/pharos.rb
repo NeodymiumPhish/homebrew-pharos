@@ -1,13 +1,13 @@
 cask "pharos" do
   arch arm: "arm64", intel: "x64"
 
-  version "1.5.13"
+  version "1.5.2"
 
   on_arm do
-    sha256 "2e66bb077b46cc8e8c4dd7e8505e39810c6a86d936625093148b48b3589c84b0"
+    sha256 "8ec0768420ab5f328e5a34c0a24daffffd478afd52c45dca09cd625c57869497"
   end
   on_intel do
-    sha256 "6fc3eda458e87021b1acdb6967af16b5edf56845231394daefcb0d1c577cc9c6"
+    sha256 "bdffa1767a847155dcd3291203a957958178f364c2801a0ee5f11ac6e5402f8e"
   end
 
   url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_#{arch}.dmg"
