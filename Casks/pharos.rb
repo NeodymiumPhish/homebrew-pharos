@@ -1,18 +1,10 @@
 cask "pharos" do
-  arch arm: "arm64", intel: "x64"
+  version "2.0.4"
+  sha256 "adc00dca2d1f6bc88d06d3afed0ddadf1e2c031b8ad464a1a0b46f0ec3e0b80e"
 
-  version "1.5.4"
-
-  on_arm do
-    sha256 "8bf9bf3ce582723e3b98fe4f49806cc18a68c098e1daa730fae4839dc3ce8fa9"
-  end
-  on_intel do
-    sha256 "d6a6dd461a28a42b7fb6fc42a952608fa806741fb282c17466a28bc8899e9a77"
-  end
-
-  url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_#{arch}.dmg"
+  url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos-v#{version}.dmg"
   name "Pharos"
-  desc "High-performance PostgreSQL client with modern UI"
+  desc "High-performance PostgreSQL client for macOS"
   homepage "https://github.com/NeodymiumPhish/Pharos"
 
   app "Pharos.app"
@@ -24,7 +16,8 @@ cask "pharos" do
   end
 
   caveats <<~EOS
-    This app is not signed. If macOS blocks it, run:
+    This app is not signed with a Developer ID.
+    If macOS blocks it, run:
       xattr -d com.apple.quarantine /Applications/Pharos.app
   EOS
 
