@@ -18,7 +18,7 @@ jobs:
         with:
           token: ${{ secrets.HOMEBREW_PAT }}
 
-      - name: Get version and update cask
+      - name: Update cask formula
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             VERSION="${{ inputs.version }}"
@@ -28,37 +28,21 @@ jobs:
 
           echo "Updating to version $VERSION"
 
-          # Download both DMGs and compute SHA256
-          ARM_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos_${VERSION}_arm64.dmg"
-          X64_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos_${VERSION}_x64.dmg"
+          DMG_URL="https://github.com/NeodymiumPhish/Pharos/releases/download/v${VERSION}/Pharos-v${VERSION}.dmg"
+          curl -L -o pharos.dmg "$DMG_URL"
+          SHA256=$(shasum -a 256 pharos.dmg | cut -d ' ' -f 1)
+          rm pharos.dmg
 
-          curl -L -o pharos_arm64.dmg "$ARM_URL"
-          curl -L -o pharos_x64.dmg "$X64_URL"
+          echo "SHA256: $SHA256"
 
-          SHA256_ARM=$(shasum -a 256 pharos_arm64.dmg | cut -d ' ' -f 1)
-          SHA256_X64=$(shasum -a 256 pharos_x64.dmg | cut -d ' ' -f 1)
-          rm pharos_arm64.dmg pharos_x64.dmg
-
-          echo "ARM64 SHA256: $SHA256_ARM"
-          echo "x64 SHA256: $SHA256_X64"
-
-          # Update pharos.rb
-          cat > Casks/pharos.rb << EOF
+          cat > Casks/pharos.rb << FORMULA
           cask "pharos" do
-            arch arm: "arm64", intel: "x64"
+            version "${VERSION}"
+            sha256 "${SHA256}"
 
-            version "$VERSION"
-
-            on_arm do
-              sha256 "$SHA256_ARM"
-            end
-            on_intel do
-              sha256 "$SHA256_X64"
-            end
-
-            url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos_#{version}_#{arch}.dmg"
+            url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos-v#{version}.dmg"
             name "Pharos"
-            desc "High-performance PostgreSQL client with modern UI"
+            desc "High-performance PostgreSQL client for macOS"
             homepage "https://github.com/NeodymiumPhish/Pharos"
 
             app "Pharos.app"
@@ -70,7 +54,8 @@ jobs:
             end
 
             caveats <<~EOS
-              This app is not signed. If macOS blocks it, run:
+              This app is not signed with a Developer ID.
+              If macOS blocks it, run:
                 xattr -d com.apple.quarantine /Applications/Pharos.app
             EOS
 
@@ -79,7 +64,7 @@ jobs:
               "~/Library/Caches/com.pharos.client",
             ]
           end
-          EOF
+          FORMULA
 
       - name: Commit and push
         run: |
