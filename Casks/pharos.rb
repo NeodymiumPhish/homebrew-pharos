@@ -1,6 +1,6 @@
 cask "pharos" do
-  version "2.4.62"
-  sha256 "ae47d446cc8f4ab5fb63fe8a09560942e7739cbaf9b70eaed891399994e362e3"
+  version "2.4.63"
+  sha256 "d9f5df1d0b72f8f5ebb1f2738080e3e5bb3b76dd4f2b674859f68cc73f4b4e56"
 
   url "https://github.com/NeodymiumPhish/Pharos/releases/download/v#{version}/Pharos-v#{version}.dmg"
   name "Pharos"
